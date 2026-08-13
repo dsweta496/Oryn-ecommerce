@@ -286,16 +286,30 @@ export const allUser = async (_, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-        const { userId } = req.params;
-        const user = await User.findById().select("-password -otp -otpExpiry -token");
+        const { id } = req.params;
+
+        const user = await User.findById(id)
+            .select("-password -otp -otpExpiry -token");
+
         if (!user) {
             return res.status(400)
-                .json({ success: false, message: "User not found." })
+                .json({
+                    success: false,
+                    message: "User not found."
+                });
         }
+
         return res.status(200)
-            .json({ success: true, user })
+            .json({
+                success: true,
+                user
+            });
+
     } catch (error) {
         return res.status(500)
-            .json({ success: false, message: error.message })
+            .json({
+                success: false,
+                message: error.message
+            });
     }
-}
+};
