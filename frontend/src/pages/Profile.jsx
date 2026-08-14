@@ -235,6 +235,8 @@ const Profile = () => {
                                     >
                                         Update Profile
                                     </Button>
+                                    <br/>
+                                    <br/>
 
                                 </form>
 

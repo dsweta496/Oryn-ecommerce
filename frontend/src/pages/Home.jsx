@@ -6,7 +6,6 @@ import Features from "@/components/features";
 const Home = () => {
     return (
         <div>
-            <Navbar/>
             <Hero/>
             <Features/>
 

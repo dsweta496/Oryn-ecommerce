@@ -17,18 +17,21 @@ import axios from "axios"
 import { useDispatch } from "react-redux"
 import { setUser } from "@/redux/userSlice"
 
-const LogIn=()=>{
+const LogIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     })
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
         setFormData((prev) => ({
             ...prev,
             [name]: value
@@ -38,39 +41,73 @@ const LogIn=()=>{
     const submitHandler = async (e) => {
         e.preventDefault();
         console.log(formData);
+
         try {
             setLoading(true)
-            const res = await axios.post('http://localhost:8000/api/v1/user/login', formData, {
-                headers: {
-                    "Content-Type": "application/json"
+
+            const res = await axios.post(
+                'http://localhost:8000/api/v1/user/login',
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 }
-            })
+            )
+
             if (res.data.success) {
                 navigate('/')
                 dispatch(setUser(res.data.user))
                 localStorage.setItem("accessToken", res.data.accessToken)
                 toast.success(res.data.message)
             }
+
         } catch (error) {
             console.log(error)
-            toast.error(error.response?.data?.message || "Something went wrong")
-        }finally{
+            toast.error(
+                error.response?.data?.message || "Something went wrong"
+            )
+        } finally {
             setLoading(false)
         }
     }
-    return(
-        <div className="flex justify-center items-center min-h-screen bg-pink-100">
-            <Card className="w-full max-w-sm">
+
+    return (
+        <div
+            className="relative flex justify-center items-center min-h-screen bg-cover bg-center bg-no-repeat px-4"
+            style={{ backgroundImage: "url('/login-bg.jpg')" }}
+        >
+
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/55"></div>
+
+            {/* Subtle pink glow */}
+            <div className="absolute w-[500px] h-[500px] bg-pink-600/20 blur-3xl rounded-full"></div>
+
+            {/* Login Card */}
+            <Card className="relative z-10 w-full max-w-sm bg-white/90 backdrop-blur-md border-white/30 shadow-2xl">
+
                 <CardHeader>
-                    <CardTitle>Login to your account</CardTitle>
+                    <CardTitle className="text-2xl">
+                        Login to your account
+                    </CardTitle>
+
                     <CardDescription>
                         Enter your details below to login to your account
                     </CardDescription>
                 </CardHeader>
+
                 <CardContent>
+
                     <div className="flex flex-col gap-3">
+
+                        {/* Email */}
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+
+                            <Label htmlFor="email">
+                                Email
+                            </Label>
+
                             <Input
                                 id="email"
                                 type="email"
@@ -79,41 +116,88 @@ const LogIn=()=>{
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
+                                className="bg-white/80"
                             />
+
                         </div>
 
+                        {/* Password */}
                         <div className="grid gap-2">
+
                             <div className="flex items-center">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">
+                                    Password
+                                </Label>
                             </div>
+
                             <div className="relative">
+
                                 <Input
                                     id="password"
                                     name="password"
                                     placeholder="Enter Password"
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={showPassword ? "text" : "password"}
                                     required
                                     value={formData.password}
                                     onChange={handleChange}
+                                    className="bg-white/80 pr-12"
                                 />
-                                {showPassword ? <EyeOff onClick={() => setShowPassword(false)} className="w-5 h-5 text-gray-700 absolute right-5 bottom-2" /> : <Eye onClick={() => setShowPassword(true)} className="w-5 h-5 text-gray-700 absolute right-5 bottom-2" />}
+
+                                {showPassword ? (
+                                    <EyeOff
+                                        onClick={() => setShowPassword(false)}
+                                        className="w-5 h-5 text-gray-700 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                                    />
+                                ) : (
+                                    <Eye
+                                        onClick={() => setShowPassword(true)}
+                                        className="w-5 h-5 text-gray-700 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                                    />
+                                )}
+
                             </div>
+
                         </div>
+
                     </div>
 
                 </CardContent>
+
                 <CardFooter className="flex-col gap-2">
-                    <Button onClick={submitHandler} type="submit" className="w-full cursor-pointer bg-pink-600 hover:bg-pink-500">
-                       {loading?<><Loader2 className="h-4 w-4 animate-spin mr-2"/>Please wait</>:'Login'} 
+
+                    {/* Login Button */}
+                    <Button
+                        onClick={submitHandler}
+                        type="submit"
+                        className="w-full cursor-pointer bg-pink-600 hover:bg-pink-500"
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                Please wait
+                            </>
+                        ) : (
+                            "Login"
+                        )}
                     </Button>
-                    <Button variant="outline" className="w-full">
-                        Continue with Google
-                    </Button>
-                    <p className="text-gray-700 text-sm">Don't have an account? <Link to={'/signup'} className='hover:underline cursor-pointer text-pink-800'>Signup</Link></p>
+
+                    {/* Signup */}
+                    <p className="text-gray-700 text-sm">
+                        Don't have an account?{" "}
+                        <Link
+                            to="/signup"
+                            className="hover:underline cursor-pointer text-pink-800"
+                        >
+                            Signup
+                        </Link>
+                    </p>
+
                 </CardFooter>
+
             </Card>
+
         </div>
     )
 }
 
-export default LogIn;
+export default LogIn
