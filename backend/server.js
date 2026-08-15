@@ -1,7 +1,8 @@
 import express from 'express'
 import 'dotenv/config'
 import connectDB from './database/db.js';
-import router from './routes/user.route.js'
+import userRouter from './routes/user.route.js';
+import productRouter from './routes/product.routes.js';
 import cors from "cors"
 
 const app = express();
@@ -14,7 +15,9 @@ app.use(cors({
     credentials:true
 }))
 
-app.use('/api/v1/user',router)
+app.use('/api/v1/user',userRouter)
+app.use('/api/v1/product',productRouter)
+
 
 app.listen(PORT,()=>{
     connectDB();

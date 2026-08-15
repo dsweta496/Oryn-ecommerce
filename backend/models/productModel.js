@@ -12,10 +12,10 @@ const productSchema = new mongoose.Schema(
         productImg:[
             {
                 url:{type:String, required:true},
-                pubic_id:{type:String, required:true},
+                public_id:{type:String, required:true},
             }
         ],
-        productPrice:{type:number},
+        productPrice:{type:Number},
         category:{type:String},
         brand:{type:String}
 
