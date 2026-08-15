@@ -16,7 +16,6 @@ import { setUser } from "@/redux/userSlice";
 import axios from "axios";
 
 const Navbar = () => {
-
     const [menuOpen, setMenuOpen] = useState(false);
 
     // REDUX USER
@@ -27,9 +26,11 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // =========================
+    // LOGOUT
+    // =========================
 
     const logoutHandler = async () => {
-
         setMenuOpen(false);
 
         try {
@@ -51,7 +52,6 @@ const Navbar = () => {
 
                 navigate("/");
             }
-
         } catch (error) {
             console.log(error);
 
@@ -61,26 +61,25 @@ const Navbar = () => {
         }
     };
 
-
     // =========================
     // USER DATA
     // =========================
 
     const userName = user?.firstName || "Guest";
 
-    const hasAddress =
-        user?.address &&
-        user?.city &&
-        user?.zipCode;
-        
-    return (
+    // Address display
+    const addressText = [user?.city, user?.zipCode]
+        .filter(Boolean)
+        .join(" ");
 
+    const hasAddress = Boolean(addressText);
+
+    return (
         <nav className="bg-pink-800 text-white shadow-md sticky top-0 z-50">
 
-
-             
-            {/* TOP NAVBAR */}
-             
+            {/* =========================
+                TOP NAVBAR
+            ========================= */}
 
             <div className="border-b border-pink-700 sticky top-0 z-50">
 
@@ -88,13 +87,11 @@ const Navbar = () => {
 
                     <div className="h-16 flex items-center justify-between">
 
-
-                         
-                        {/* LEFT : HAMBURGER + LOGO */}
-                         
+                        {/* =========================
+                            LEFT : HAMBURGER + LOGO
+                        ========================= */}
 
                         <div className="flex items-center gap-2 sm:gap-4">
-
 
                             {/* MOBILE HAMBURGER */}
 
@@ -103,15 +100,12 @@ const Navbar = () => {
                                 className="md:hidden p-2 rounded-md hover:bg-pink-700 transition"
                                 aria-label="Open menu"
                             >
-
                                 {menuOpen ? (
                                     <X size={25} />
                                 ) : (
                                     <Menu size={25} />
                                 )}
-
                             </button>
-
 
                             {/* LOGO */}
 
@@ -119,25 +113,20 @@ const Navbar = () => {
                                 to="/"
                                 className="flex items-center"
                             >
-
                                 <img
                                     src="/ORYN-white.png"
                                     alt="ORYN"
                                     className="h-9 sm:h-10 w-auto object-contain"
                                 />
-
                             </Link>
 
                         </div>
 
-
-
-                         
-                        {/* DESKTOP NAVIGATION */}
-                         
+                        {/* =========================
+                            DESKTOP NAVIGATION
+                        ========================= */}
 
                         <div className="hidden md:flex items-center gap-7">
-
 
                             <Link
                                 to="/"
@@ -146,7 +135,6 @@ const Navbar = () => {
                                 Home
                             </Link>
 
-
                             <Link
                                 to="/products"
                                 className="font-semibold text-lg hover:text-pink-200 transition"
@@ -154,22 +142,18 @@ const Navbar = () => {
                                 Products
                             </Link>
 
+                            {/* PROFILE */}
 
-                            {user && (
-
+                            {user && user._id && (
                                 <Link
-                                    to="/profile"
+                                    to={`/profile/${user._id}`}
                                     className="flex items-center gap-2 font-semibold text-lg hover:text-pink-200 transition"
                                 >
-
                                     <User size={21} />
 
                                     Hello, {userName}
-
                                 </Link>
-
                             )}
-
 
                             {/* CART */}
 
@@ -177,74 +161,63 @@ const Navbar = () => {
                                 to="/cart"
                                 className="relative p-2 hover:text-pink-200 transition"
                             >
-
                                 <ShoppingCart size={30} />
 
                                 <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                                     0
                                 </span>
-
                             </Link>
-
 
                             {/* LOGIN / LOGOUT */}
 
                             {user ? (
-
                                 <Button
                                     onClick={logoutHandler}
                                     className="bg-pink-600 hover:bg-pink-500 text-white font-semibold p-5 text-md"
                                 >
                                     Logout
                                 </Button>
-
                             ) : (
-
                                 <Button
                                     onClick={() => navigate("/login")}
-                                    className="bg-gradient-to-r from-purple-900 to-blue-600  text-white font-semibold p-5 text-md"
+                                    className="bg-gradient-to-r from-purple-900 to-blue-600 text-white font-semibold p-5 text-md"
                                 >
                                     Login
                                 </Button>
-
                             )}
 
                         </div>
 
-
-
-                         
-                        {/* MOBILE USER + CART */}
-                         
+                        {/* =========================
+                            MOBILE USER + CART
+                        ========================= */}
 
                         <div className="md:hidden flex items-center gap-3">
 
+                            {/* MOBILE PROFILE */}
 
-                            {user && (
-
+                            {user && user._id && (
                                 <Link
-                                    to="/profile"
+                                    to={`/profile/${user._id}`}
                                     className="p-1"
                                     aria-label="Profile"
                                 >
                                     <User size={23} />
                                 </Link>
-
                             )}
 
+                            {/* MOBILE CART */}
 
                             <Link
                                 to="/cart"
                                 className="relative p-1"
                                 aria-label="Cart"
                             >
-
                                 <ShoppingCart size={27} />
 
                                 <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                                     0
                                 </span>
-
                             </Link>
 
                         </div>
@@ -255,11 +228,13 @@ const Navbar = () => {
 
             </div>
 
+            {/* =========================
+                DELIVERY BAR
+            ========================= */}
 
-
-
-            {/* DELIVERY BAR */}
-
+            {/* =========================
+    DELIVERY BAR
+========================= */}
 
             <div className="bg-pink-900 border-b border-pink-700">
 
@@ -267,7 +242,28 @@ const Navbar = () => {
 
                     <div className="min-h-12 flex items-center gap-2">
 
-                        <MapPin size={28} className="shrink-0" />
+                        {/* ADDRESS ICON */}
+                        {user && user._id ? (
+                            <Link
+                                to={`/profile/${user._id}`}
+                                aria-label="Manage delivery address"
+                            >
+                                <MapPin
+                                    size={28}
+                                    className="shrink-0 hover:text-pink-200 transition"
+                                />
+                            </Link>
+                        ) : (
+                            <Link
+                                to="/signup"
+                                aria-label="Sign up to add an address"
+                            >
+                                <MapPin
+                                    size={28}
+                                    className="shrink-0 hover:text-pink-200 transition"
+                                />
+                            </Link>
+                        )}
 
                         <div className="flex flex-col leading-tight">
 
@@ -275,28 +271,47 @@ const Navbar = () => {
                                 Deliver to {userName}
                             </span>
 
-                            {hasAddress ? (
+                            {/* LOGGED-IN USER */}
+                            {user && user._id ? (
 
-                                <Link
-                                    to="/profile"
-                                    className="flex items-center gap-1 text-sm sm:text-base font-semibold hover:text-pink-200 transition"
-                                >
-                                    {user.city} {user.zipCode}
-                                </Link>
+                                hasAddress ? (
+
+                                    <Link
+                                        to={`/profile/${user._id}`}
+                                        className="flex items-center gap-1 text-sm sm:text-base font-semibold hover:text-pink-200 transition"
+                                    >
+                                        {user.city} {user.zipCode}
+                                    </Link>
+
+                                ) : (
+
+                                    <Link
+                                        to={`/profile/${user._id}`}
+                                        className="text-sm sm:text-base font-semibold hover:text-pink-200 transition"
+                                    >
+                                        Add Address
+                                    </Link>
+
+                                )
 
                             ) : (
 
+                                /* LOGGED-OUT USER */
                                 <Link
-                                    to="/profile"
+                                    to="/signup"
                                     className="text-sm sm:text-base font-semibold hover:text-pink-200 transition"
                                 >
-                                    Add Address
+                                    Sign Up to Add Address
                                 </Link>
 
                             )}
 
                         </div>
-                        <ChevronDown size={14} />
+
+                        <ChevronDown
+                            size={14}
+                            className="shrink-0"
+                        />
 
                     </div>
 
@@ -304,11 +319,9 @@ const Navbar = () => {
 
             </div>
 
-
-
-             
-            {/* MOBILE SLIDE MENU */}
-             
+            {/* =========================
+                MOBILE SLIDE MENU
+            ========================= */}
 
             {menuOpen && (
 
@@ -316,6 +329,7 @@ const Navbar = () => {
 
                     <div className="p-3 space-y-1">
 
+                        {/* HOME */}
 
                         <Link
                             to="/"
@@ -325,6 +339,7 @@ const Navbar = () => {
                             Home
                         </Link>
 
+                        {/* PRODUCTS */}
 
                         <Link
                             to="/products"
@@ -334,19 +349,19 @@ const Navbar = () => {
                             Products
                         </Link>
 
+                        {/* PROFILE */}
 
-                        {user && (
-
+                        {user && user._id && (
                             <Link
-                                to="/profile"
+                                to={`/profile/${user._id}`}
                                 onClick={() => setMenuOpen(false)}
                                 className="block px-4 py-3 rounded-lg font-semibold text-lg hover:bg-pink-700"
                             >
                                 My Profile
                             </Link>
-
                         )}
 
+                        {/* CART */}
 
                         <Link
                             to="/cart"
@@ -356,9 +371,9 @@ const Navbar = () => {
                             Cart
                         </Link>
 
+                        {/* LOGIN / LOGOUT */}
 
                         {user ? (
-
                             <button
                                 type="button"
                                 onClick={logoutHandler}
@@ -366,10 +381,9 @@ const Navbar = () => {
                             >
                                 Logout
                             </button>
-
                         ) : (
-
                             <button
+                                type="button"
                                 onClick={() => {
                                     setMenuOpen(false);
                                     navigate("/login");
@@ -378,7 +392,6 @@ const Navbar = () => {
                             >
                                 Login
                             </button>
-
                         )}
 
                     </div>
@@ -388,9 +401,7 @@ const Navbar = () => {
             )}
 
         </nav>
-
     );
-
 };
 
 export default Navbar;
