@@ -45,11 +45,19 @@ const ProductCard = ({ product, loading }) => {
     }
     return (
         <div className='shadow-lg rounded-lg overflow-hidden h-max'>
-            <div className='w-full h-full aspect-square overflow-hidden'>
+            <div
+                className='w-full h-full aspect-square overflow-hidden cursor-pointer'
+                onClick={() => navigate(`/products/${product._id}`)}
+            >
                 {
-                    loading ? <Skeleton className="w-full h-full rounded-lg" /> : <img src={productImg[0]?.url} alt="" className='w-full h-full transition-transform duration-300 hover:scale-105' />
+                    loading ?
+                        <Skeleton className="w-full h-full rounded-lg" /> :
+                        <img
+                            src={productImg[0]?.url}
+                            alt={productName}
+                            className='w-full h-full transition-transform duration-300 hover:scale-105'
+                        />
                 }
-
             </div>
             {
                 loading ?
@@ -59,7 +67,12 @@ const ProductCard = ({ product, loading }) => {
                         <Skeleton className="w-[150px] h-4" />
                     </div> :
                     <div className='px-2 space-y-1'>
-                        <h1 className='font-semibold h-12 line-clamp-2'>{productName}</h1>
+                        <h1
+                            className='font-semibold h-12 line-clamp-2 cursor-pointer hover:text-pink-600 transition-colors'
+                            onClick={() => navigate(`/products/${product._id}`)}
+                        >
+                            {productName}
+                        </h1>
                         <h2 className='font-bold'>₹ {productPrice}</h2>
                         <Button onClick={() => addToCart(product._id)} className="bg-pink-600 mb-3 w-full"><ShoppingCart />Add to Cart</Button>
                     </div>

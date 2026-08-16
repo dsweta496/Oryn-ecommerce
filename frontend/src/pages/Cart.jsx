@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 
+
 const Cart = () => {
   const dispatch = useDispatch();
 
@@ -116,7 +117,7 @@ const Cart = () => {
 
   if (!cart || items.length === 0) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
+      <div className="min-h-[70vh]  flex flex-col items-center justify-center px-4">
         <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-5">
           <ShoppingBag className="w-9 h-9 text-gray-500" />
         </div>
@@ -172,27 +173,41 @@ const Cart = () => {
             return (
               <div
                 key={product._id}
-                className="border border-gray-200 rounded-xl p-4 md:p-5 bg-white"
+                onClick={(e) => {
+                  // Don't navigate when clicking cart controls
+                  if (e.target.closest("button")) {
+                    return;
+                  }
+
+                  navigate(`/products/${product._id}`);
+                }}
+                className="border border-gray-200 rounded-xl p-4 md:p-5 bg-white cursor-pointer hover:shadow-md transition-shadow"
               >
                 <div className="flex gap-4">
 
                   {/* IMAGE */}
-                  <div className="w-24 h-24 md:w-32 md:h-32 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
+                  <Link
+                    to={`/products/${product._id}`}
+                    className="w-24 h-24 md:w-32 md:h-32 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
+                  >
                     <img
                       src={productImage}
                       alt={product.productName}
                       className="w-full h-full object-contain"
                     />
-                  </div>
+                  </Link>
 
                   {/* DETAILS */}
                   <div className="flex-1 min-w-0">
 
                     <div className="flex justify-between gap-3">
                       <div>
-                        <h2 className="font-medium text-gray-900 text-base md:text-lg">
+                        <Link
+                          to={`/products/${product._id}`}
+                          className="font-medium text-gray-900 text-base md:text-lg hover:text-pink-600 transition-colors cursor-pointer"
+                        >
                           {product.productName}
-                        </h2>
+                        </Link>
 
                         {product.brand && (
                           <p className="text-sm text-gray-500 mt-1">

@@ -69,6 +69,32 @@ export const getAllProduct = async (_, res) => {
     }
 }
 
+export const getProductById = async (req, res) => {
+    try {
+        const { productId } = req.params;
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            product
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 export const deleteProduct = async (req, res) => {
     try {
         const { productId } = req.params;
@@ -117,16 +143,15 @@ export const updateProduct = async (req, res) => {
             brand,
             existingImages
         } = req.body;
-
         const product = await Product.findById(productId);
 
-        if (!products || products.length === 0)  {
-            return res.status(404)
-                .json({
-                    success: false,
-                    message: "Product not found."
-                });
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
         }
+
 
         let updatedImages = [];
 

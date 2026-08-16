@@ -18,11 +18,10 @@ export const getCart = async (req, res) => {
 }
 
 export const addToCart = async (req, res) => {
-    
+
     try {
         const userId = req.id;
-        const { productId } = req.body;
-
+        const { productId, quantity = 1 } = req.body;
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({
@@ -36,21 +35,26 @@ export const addToCart = async (req, res) => {
         if (!cart) {
             cart = new Cart({
                 userId,
-                items: [{ productId, quantity: 1, price: product.productPrice }],
-                totalPrice: product.productPrice
+                items: [{
+                    productId,
+                    quantity,
+                    price: product.productPrice
+                }],
+                totalPrice: product.productPrice * quantity
             })
         } else {
             const itemIndex = cart.items.findIndex(
                 (item) => item.productId.toString() === productId
             )
             if (itemIndex !== -1) {
-                cart.items[itemIndex].quantity += 1;
+                cart.items[itemIndex].quantity += quantity;
             } else {
                 cart.items.push({
                     productId,
-                    quantity: 1,
+                    quantity,
                     price: product.productPrice
                 });
+
             }
             cart.totalPrice = cart.items.reduce(
                 (acc, item) => acc + item.price * item.quantity,
@@ -81,26 +85,76 @@ export const addToCart = async (req, res) => {
 export const updateQuantity = async (req, res) => {
     try {
         const userId = req.id;
-        const { productId, type } = req.body;
+        const { productId, type, quantity } = req.body;
 
-        let cart = await Cart.findOne({ userId })
-        if (!cart) return res.status(404).json({ success: false, message: "Cart not found." })
+        let cart = await Cart.findOne({ userId });
 
-        const item = cart.items.find(item => item.productId.toString() === productId)
-        if (!item) return res.status(404).json({ success: false, message: "Item not found." })
-        if (type === 'increase') item.quantity += 1
-        if (type === 'decrease' && item.quantity > 1) item.quantity -= 1;
+        if (!cart) {
+            return res.status(404).json({
+                success: false,
+                message: "Cart not found."
+            });
+        }
 
-        cart.totalPrice = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+        const item = cart.items.find(
+            item => item.productId.toString() === productId
+        );
 
-        await cart.save()
-        cart = await cart.populate("items.productId")
+        if (!item) {
+            return res.status(404).json({
+                success: false,
+                message: "Item not found."
+            });
+        }
 
-        res.status(200).json({ success: true, cart })
+        // Product Details page:
+        // Set quantity directly
+        if (quantity !== undefined) {
+            const newQuantity = Number(quantity);
+
+            if (!Number.isInteger(newQuantity) || newQuantity < 1) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid quantity."
+                });
+            }
+
+            item.quantity = newQuantity;
+        }
+
+        // Cart page:
+        // Keep existing + / - functionality
+        else if (type === "increase") {
+            item.quantity += 1;
+        }
+
+        else if (type === "decrease" && item.quantity > 1) {
+            item.quantity -= 1;
+        }
+
+        cart.totalPrice = cart.items.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+        );
+
+        await cart.save();
+
+        cart = await cart.populate("items.productId");
+
+        res.status(200).json({
+            success: true,
+            cart
+        });
+
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message })
+        console.error("UPDATE QUANTITY ERROR:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-}
+};
 
 export const removeFromCart = async (req, res) => {
     try {

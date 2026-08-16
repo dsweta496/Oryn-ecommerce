@@ -10,47 +10,52 @@ import VerifyEmail from "./pages/VerifyEmail"
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
+import ProductDetails from "./pages/ProductDetails";
 
 
 const router = createBrowserRouter([
   {
-    path:'/',
-    element: <><Navbar/><Home/><Footer/></>
+    path: '/',
+    element: <><Navbar /><Home /><Footer /></>
   },
   {
-    path:'/signup',
-    element: <><SignUp/></>
+    path: '/signup',
+    element: <><SignUp /></>
   },
   {
-    path:'/login',
-    element: <><LogIn/></>
+    path: '/login',
+    element: <><LogIn /></>
   },
   {
-    path:'/verify',
-    element: <><Verify/></>
+    path: '/verify',
+    element: <><Verify /></>
   },
   {
-    path:'/verify/:token',
-    element: <><VerifyEmail/></>
+    path: '/verify/:token',
+    element: <><VerifyEmail /></>
   },
   {
-    path:'/profile/:userId',
-    element: <><Navbar/><Profile/><Footer/></>
+    path: '/profile/:userId',
+    element: <><Navbar /><Profile /><Footer /></>
   },
   {
-    path:'/products',
-    element: <><Navbar/><Products/><Footer/></>
+    path: '/products',
+    element: <><Navbar /><Products /><Footer /></>
   },
   {
-    path:'/cart',
-    element: <><Navbar/><Cart/><Footer/></>
+    path: '/products/:productId',
+    element: <><Navbar /><ProductDetails /><Footer /></>
+  },
+  {
+    path: '/cart',
+    element: <><Navbar /><Cart /><Footer /></>
   }
 ])
 
 function App() {
   return (
     <>
-      <RouterProvider router={router}/>
+      <RouterProvider router={router} />
     </>
   )
 }
