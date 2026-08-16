@@ -120,7 +120,7 @@ export const updateProduct = async (req, res) => {
 
         const product = await Product.findById(productId);
 
-        if (!product) {
+        if (!products || products.length === 0)  {
             return res.status(404)
                 .json({
                     success: false,

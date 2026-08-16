@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
     Menu,
@@ -13,18 +13,52 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/userSlice";
+import { setCart } from "@/redux/productSlice";
 import axios from "axios";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
-    // REDUX USER
     const { user } = useSelector((store) => store.user);
+    const { cart } = useSelector((store) => store.product);
 
+    
+
+    // REDUX USER
     const accessToken = localStorage.getItem("accessToken");
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const fetchCart = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+
+            if (!accessToken) {
+                return;
+            }
+
+            try {
+                const res = await axios.get(
+                    "http://localhost:8000/api/v1/cart",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
+
+                if (res.data.success) {
+                    dispatch(setCart(res.data.cart));
+                }
+            } catch (error) {
+                console.error("Failed to fetch cart:", error);
+            }
+        };
+
+        fetchCart();
+    }, [dispatch]);
 
     // =========================
     // LOGOUT
@@ -73,6 +107,12 @@ const Navbar = () => {
         .join(" ");
 
     const hasAddress = Boolean(addressText);
+
+    const cartCount =
+        cart?.items?.reduce(
+            (total, item) => total + item.quantity,
+            0
+        ) || 0;
 
     return (
         <nav className="bg-pink-800 text-white shadow-md sticky top-0 z-50">
@@ -164,7 +204,7 @@ const Navbar = () => {
                                 <ShoppingCart size={30} />
 
                                 <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                                    0
+                                    {cartCount}
                                 </span>
                             </Link>
 
