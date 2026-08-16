@@ -8,15 +8,19 @@ import {
     getMyOrders,
 } from "../controller/orderController.js";
 
-import { isAuthenticated } from "../middleware/isAuthenticated.js";
+import {
+    getAdminIncomeStats,
+    getProductSalesAnalytics,
+} from "../controller/analyticsController.js";
+
+import {
+    isAuthenticated,
+    isAdmin,
+} from "../middleware/isAuthenticated.js";
 
 
 const router = express.Router();
 
-
- 
-// COD
- 
 
 router.post(
     "/cod",
@@ -25,11 +29,6 @@ router.post(
 );
 
 
- 
-// RAZORPAY
- 
-
-// Create Razorpay test order
 router.post(
     "/razorpay/create",
     isAuthenticated,
@@ -37,7 +36,6 @@ router.post(
 );
 
 
-// Verify successful Razorpay payment
 router.post(
     "/razorpay/verify",
     isAuthenticated,
@@ -45,7 +43,6 @@ router.post(
 );
 
 
-// Handle failed Razorpay payment
 router.post(
     "/razorpay/failed",
     isAuthenticated,
@@ -53,14 +50,26 @@ router.post(
 );
 
 
- 
-// GET USER ORDERS
- 
-
 router.get(
     "/my-orders",
     isAuthenticated,
     getMyOrders
+);
+
+
+router.get(
+    "/admin/stats",
+    isAuthenticated,
+    isAdmin,
+    getAdminIncomeStats
+);
+
+
+router.get(
+    "/admin/product-analytics",
+    isAuthenticated,
+    isAdmin,
+    getProductSalesAnalytics
 );
 
 
