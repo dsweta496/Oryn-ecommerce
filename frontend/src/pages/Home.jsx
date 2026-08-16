@@ -20,12 +20,18 @@ const Home = () => {
 
     return (
         <div className="w-full bg-white">
+
             <Hero />
 
-            <Features/>
+            <Features />
 
-            <section className="banner-section">
+            {/* ================= DEALS / BANNERS ================= */}
+            <section
+                id="deals"
+                className="banner-section"
+            >
                 <div className="banner-grid p-6">
+
                     {banners.map((banner, index) => (
                         <div
                             key={index}
@@ -47,8 +53,10 @@ const Home = () => {
                             />
                         </div>
                     ))}
+
                 </div>
             </section>
+
         </div>
     );
 };
