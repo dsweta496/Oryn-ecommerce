@@ -144,3 +144,97 @@
 .animate-slideIn {
     animation: slideIn 0.7s ease-out;
 }
+
+/* ORYN Home promotional banners */
+
+.banner-section {
+    width: 100%;
+    padding: 24px 40px 32px;
+}
+
+.banner-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+}
+
+.banner-card {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.banner-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.banner-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .banner-section {
+        padding: 20px 24px 28px;
+    }
+
+    .banner-grid {
+        gap: 14px;
+    }
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+    .banner-section {
+        width: 100%;
+        padding: 18px 0 24px;
+    }
+
+    .banner-grid {
+        display: flex;
+        gap: 14px;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0 16px 4px;
+
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        overscroll-behavior-x: contain;
+
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .banner-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .banner-card {
+        flex: 0 0 88%;
+        scroll-snap-align: center;
+        border-radius: 18px;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .banner-card:hover {
+        transform: none;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+    }
+}
