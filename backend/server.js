@@ -25,5 +25,4 @@ app.use("/api/v1/order", orderRoute);
 
 app.listen(PORT,()=>{
     connectDB();
-    console.log(`Server is listening at port: ${PORT}`);
 })
