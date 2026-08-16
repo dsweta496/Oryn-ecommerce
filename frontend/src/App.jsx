@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 import Home from "./pages/Home";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 import Navbar from "../src/components/navbar";
 import Verify from "./pages/Verify";
 import VerifyEmail from "./pages/VerifyEmail";
