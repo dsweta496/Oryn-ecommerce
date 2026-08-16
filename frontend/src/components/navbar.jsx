@@ -7,13 +7,14 @@ import {
     User,
     MapPin,
     ChevronDown,
+    LayoutDashboard,
 } from "lucide-react";
 
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/userSlice";
-import { setCart } from "@/redux/productSlice";
+import { setCart, clearCart } from "@/redux/productSlice";
 import axios from "axios";
 
 const Navbar = () => {
@@ -22,7 +23,7 @@ const Navbar = () => {
     const { user } = useSelector((store) => store.user);
     const { cart } = useSelector((store) => store.product);
 
-    
+
 
     // REDUX USER
     const accessToken = localStorage.getItem("accessToken");
@@ -80,6 +81,7 @@ const Navbar = () => {
 
             if (res.data.success) {
                 dispatch(setUser(null));
+                dispatch(clearCart());
                 localStorage.removeItem("accessToken");
 
                 toast.success(res.data.message);
@@ -195,19 +197,30 @@ const Navbar = () => {
                                 </Link>
                             )}
 
-                            {/* CART */}
+                            {/* CART / ADMIN DASHBOARD */}
 
-                            <Link
-                                to="/cart"
-                                className="relative p-2 hover:text-pink-200 transition"
-                            >
-                                <ShoppingCart size={30} />
+                            {user?.role === "admin" ? (
+                                <Link
+                                    to="/admin"
+                                    className="flex items-center gap-2 p-2 font-semibold hover:text-pink-200 transition"
+                                    aria-label="Admin Dashboard"
+                                >
+                                    <LayoutDashboard size={27} />
+                                    <span>Admin</span>
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/cart"
+                                    className="relative p-2 hover:text-pink-200 transition"
+                                    aria-label="Cart"
+                                >
+                                    <ShoppingCart size={30} />
 
-                                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                                    {cartCount}
-                                </span>
-                            </Link>
-
+                                    <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                                        {cartCount}
+                                    </span>
+                                </Link>
+                            )}
                             {/* LOGIN / LOGOUT */}
 
                             {user ? (
@@ -246,19 +259,29 @@ const Navbar = () => {
                                 </Link>
                             )}
 
-                            {/* MOBILE CART */}
+                            {/* MOBILE CART / ADMIN DASHBOARD */}
 
-                            <Link
-                                to="/cart"
-                                className="relative p-1"
-                                aria-label="Cart"
-                            >
-                                <ShoppingCart size={27} />
+                            {user?.role === "admin" ? (
+                                <Link
+                                    to="/admin"
+                                    className="p-1"
+                                    aria-label="Admin Dashboard"
+                                >
+                                    <LayoutDashboard size={27} />
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/cart"
+                                    className="relative p-1"
+                                    aria-label="Cart"
+                                >
+                                    <ShoppingCart size={27} />
 
-                                <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                                    0
-                                </span>
-                            </Link>
+                                    <span className="absolute -top-1 -right-2 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                                        {cartCount}
+                                    </span>
+                                </Link>
+                            )}
 
                         </div>
 

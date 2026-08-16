@@ -15,10 +15,13 @@ const productSlice = createSlice({
 
         setCart: (state, action) => {
             state.cart = action.payload;
-        }
+        },
+
+        clearCart: (state) => {
+            state.cart = null;
+        },
     }
 });
 
-export const { setProducts, setCart } = productSlice.actions;
-
+export const { setProducts, setCart, clearCart } = productSlice.actions;
 export default productSlice.reducer;

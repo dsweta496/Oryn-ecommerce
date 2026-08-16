@@ -124,10 +124,17 @@ const LogIn = () => {
                         {/* Password */}
                         <div className="grid gap-2">
 
-                            <div className="flex items-center">
+                            <div className="flex items-center justify-between">
                                 <Label htmlFor="password">
                                     Password
                                 </Label>
+
+                                <Link
+                                    to="/forgot-password"
+                                    className="text-sm text-pink-800 hover:underline cursor-pointer"
+                                >
+                                    Forgot password?
+                                </Link>
                             </div>
 
                             <div className="relative">

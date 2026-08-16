@@ -10,7 +10,9 @@ import VerifyEmail from "./pages/VerifyEmail"
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
+import Admin from "./pages/Admin";
 import ProductDetails from "./pages/ProductDetails";
+import ForgotPassword from "./pages/ForgotPassword";
 
 
 const router = createBrowserRouter([
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <><LogIn /></>
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />
   },
   {
     path: '/verify',
@@ -45,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: '/products/:productId',
     element: <><Navbar /><ProductDetails /><Footer /></>
+  },
+  {
+    path: "/admin",
+    element: <><Navbar /><Admin /><Footer /></>,
   },
   {
     path: '/cart',

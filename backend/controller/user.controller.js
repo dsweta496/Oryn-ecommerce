@@ -1,6 +1,7 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
+import crypto from "crypto";
 import { verifyEmail } from "../EmailVerify/verifyEmail.js";
 import { Session } from "../models/session.model.js";
 import { sendOTPmail } from "../EmailVerify/sendOTPmail.js";
@@ -185,26 +186,52 @@ export const logOut = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
     try {
-        const { email } = req.body
-        const user = await User.findOne({ email })
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400)
+                .json({
+                    success: false,
+                    message: "Email is required."
+                });
+        }
+
+        const user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400)
-                .json({ success: false, message: "User not found" })
+                .json({
+                    success: false,
+                    message: "User not found"
+                });
         }
-        const OTP = Math.floor(100000 + Math.random() * 900000).toString()
-        const OTPexpiry = new Date(Date.now() + 10 * 60 * 1000)
-        user.otp = OTP
-        user.otpExpiry = OTPexpiry
 
-        await user.save()
+        const OTP = Math.floor(100000 + Math.random() * 900000).toString();
+        const OTPexpiry = new Date(Date.now() + 10 * 60 * 1000);
+
+        user.otp = OTP;
+        user.otpExpiry = OTPexpiry;
+
+        // Invalidate any previous password-reset authorization
+        user.resetPasswordToken = null;
+        user.resetPasswordExpiry = null;
+
+        await user.save();
 
         await sendOTPmail(OTP, email);
 
         return res.status(200)
-            .json({ success: true, message: `OTP sent to ${email} successfully.` })
+            .json({
+                success: true,
+                message: `OTP sent to ${email} successfully.`
+            });
+
     } catch (error) {
         return res.status(500)
-            .json({ success: false, message: error.message })
+            .json({
+                success: false,
+                message: error.message
+            });
     }
 }
 
@@ -212,65 +239,178 @@ export const verifyOTP = async (req, res) => {
     try {
         const { otp } = req.body;
         const email = req.params.email;
+
         if (!otp) {
             return res.status(400)
-                .json({ success: false, message: "OTP is required." })
+                .json({
+                    success: false,
+                    message: "OTP is required."
+                });
         }
 
         const user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400)
-                .json({ success: false, message: "User not found." })
+                .json({
+                    success: false,
+                    message: "User not found."
+                });
         }
+
         if (!user.otp || !user.otpExpiry) {
             return res.status(400)
-                .json({ success: false, message: "OTP  is not generated or already verified." })
+                .json({
+                    success: false,
+                    message: "OTP is not generated or already verified."
+                });
         }
+
         if (user.otpExpiry < new Date()) {
             return res.status(400)
-                .json({ success: false, message: "OTP  has expired please request a new one." })
+                .json({
+                    success: false,
+                    message: "OTP has expired. Please request a new one."
+                });
         }
+
         if (otp !== user.otp) {
             return res.status(400)
-                .json({ success: false, message: "Incorrect OTP." })
+                .json({
+                    success: false,
+                    message: "Incorrect OTP."
+                });
         }
+
+        // Generate a temporary authorization for changing the password
+        const resetPasswordToken = crypto.randomBytes(32).toString("hex");
+
+        // Store only the hash in the database
+        const hashedResetPasswordToken = crypto
+            .createHash("sha256")
+            .update(resetPasswordToken)
+            .digest("hex");
+
         user.otp = null;
         user.otpExpiry = null;
+
+        user.resetPasswordToken = hashedResetPasswordToken;
+        user.resetPasswordExpiry = new Date(Date.now() + 10 * 60 * 1000);
+
         await user.save();
+
         return res.status(200)
-            .json({ success: true, message: "OTP  verified successfully." })
+            .json({
+                success: true,
+                message: "OTP verified successfully.",
+                resetPasswordToken
+            });
+
     } catch (error) {
         return res.status(500)
-            .json({ success: false, message: error.message })
+            .json({
+                success: false,
+                message: error.message
+            });
     }
 }
 
 export const changePassword = async (req, res) => {
     try {
-        const { newPassword, confirmPassword } = req.body;
+        const {
+            newPassword,
+            confirmPassword,
+            resetPasswordToken
+        } = req.body;
+
         const { email } = req.params;
+
         const user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400)
-                .json({ success: false, message: "User not found." })
+                .json({
+                    success: false,
+                    message: "User not found."
+                });
         }
-        if (!newPassword || !confirmPassword) {
+
+        if (!newPassword || !confirmPassword || !resetPasswordToken) {
             return res.status(400)
-                .json({ success: false, message: "All feilds required" })
+                .json({
+                    success: false,
+                    message: "All fields are required."
+                });
         }
+
         if (newPassword !== confirmPassword) {
             return res.status(400)
-                .json({ success: false, message: "Confirmed password does not match." })
+                .json({
+                    success: false,
+                    message: "Confirmed password does not match."
+                });
         }
+
+        // Make sure OTP verification actually happened
+        if (!user.resetPasswordToken || !user.resetPasswordExpiry) {
+            return res.status(400)
+                .json({
+                    success: false,
+                    message: "Password reset authorization is missing. Please verify the OTP again."
+                });
+        }
+
+        // Check whether the reset authorization has expired
+        if (user.resetPasswordExpiry < new Date()) {
+            user.resetPasswordToken = null;
+            user.resetPasswordExpiry = null;
+
+            await user.save();
+
+            return res.status(400)
+                .json({
+                    success: false,
+                    message: "Password reset authorization has expired. Please request a new OTP."
+                });
+        }
+
+        // Hash the token received from the frontend
+        const hashedResetPasswordToken = crypto
+            .createHash("sha256")
+            .update(resetPasswordToken)
+            .digest("hex");
+
+        // Compare it with the token stored in MongoDB
+        if (hashedResetPasswordToken !== user.resetPasswordToken) {
+            return res.status(400)
+                .json({
+                    success: false,
+                    message: "Invalid password reset authorization."
+                });
+        }
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
+
         user.password = hashedPassword;
+
+        // Make the reset authorization single-use
+        user.resetPasswordToken = null;
+        user.resetPasswordExpiry = null;
+
         await user.save();
 
         return res.status(200)
-            .json({ success: true, message: "Password changed successfully." })
+            .json({
+                success: true,
+                message: "Password changed successfully."
+            });
+
     } catch (error) {
         return res.status(500)
-            .json({ success: false, message: error.message })
+            .json({
+                success: false,
+                message: error.message
+            });
     }
 }
 

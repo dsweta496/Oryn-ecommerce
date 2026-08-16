@@ -1,70 +1,78 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    firstName:{
+    firstName: {
         type: String,
         required: true,
     },
-    lastName:{
+    lastName: {
         type: String,
         required: true,
     },
-    profilePic:{
+    profilePic: {
         type: String,
         default: "",//Cloudinary image url
     },
-    profilePicPublicId:{
+    profilePicPublicId: {
         type: String,
         default: "",//Cloudinary public id
     },
-    email:{
+    email: {
         type: String,
         required: true,
-        unique:true,
+        unique: true,
     },
-    password:{
+    password: {
         type: String,
         required: true,
     },
-    role:{
+    role: {
         type: String,
-        enum:["user","admin"],
-        default:"user"
+        enum: ["user", "admin"],
+        default: "user"
     },
-    token:{
+    token: {
         type: String,
-        default:null
+        default: null
     },
-    isVerified:{
+    isVerified: {
         type: Boolean,
-        default:false
+        default: false
     },
-    isLoggedIn:{
+    isLoggedIn: {
         type: Boolean,
-        default:false
+        default: false
     },
-    otp:{
+    otp: {
         type: String,
-        default:null
+        default: null
     },
-    otpExpiry:{
+    otpExpiry: {
         type: Date,
-        default:null
+        default: null
     },
-    address:{
+    resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpiry: {
+        type: Date,
+        default: null
+    },
+    address: {
         type: String,
     },
-    city:{
+    city: {
         type: String,
     },
-    zipCode:{
+    zipCode: {
         type: String,
     },
-    phoneNo:{
+    phoneNo: {
         type: String,
     },
 },
-{timestamps:true}
+    { timestamps: true }
 )
 
-export const User =mongoose.model("User",userSchema)
+export const User = mongoose.model("User", userSchema)
