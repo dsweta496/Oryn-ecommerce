@@ -9,6 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import.meta.env.VITE_API_URL;
 import ProductCard from '@/components/ProductCard'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
@@ -41,7 +42,7 @@ const Products = () => {
     const getAllProducts = async () => {
         try {
             setLoading(true);
-            const res = await axios.get('http://localhost:8000/api/v1/product/getAllProducts');
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/product/getAllProducts`);
 
             if (res.data.success) {
                 setAllProducts(res.data.products)

@@ -1,5 +1,6 @@
 import react, { useState } from "react"
 import { Button } from "@/components/ui/button"
+import.meta.env.VITE_API_URL
 import {
     Card,
     CardContent,
@@ -46,7 +47,7 @@ const LogIn = () => {
             setLoading(true)
 
             const res = await axios.post(
-                'http://localhost:8000/api/v1/user/login',
+                `${import.meta.env.VITE_API_URL}/api/v1/user/login`,
                 formData,
                 {
                     headers: {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import.meta.env.VITE_API_URL;
 
 const VerifyEmail = () => {
     const { token } = useParams();
@@ -14,7 +15,7 @@ const VerifyEmail = () => {
     const verifyEmail = async () => {
         try {
             const res = await axios.post(
-                "http://localhost:8000/api/v1/user/verify",
+                `${import.meta.env.VITE_API_URL}/api/v1/user/verify`,
                 {},
                 {
                     headers: {
@@ -43,7 +44,7 @@ const VerifyEmail = () => {
             setResendMessage("");
 
             const res = await axios.post(
-                "http://localhost:8000/api/v1/user/reVerify",
+                `${import.meta.env.VITE_API_URL}/api/v1/user/reVerify`,
                 { email }
             );
 

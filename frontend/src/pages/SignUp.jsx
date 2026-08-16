@@ -9,6 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import.meta.env.VITE_API_URL;
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
@@ -46,7 +47,7 @@ const SignUp = () => {
             setLoading(true)
 
             const res = await axios.post(
-                'http://localhost:8000/api/v1/user/register',
+                `${import.meta.env.VITE_API_URL}/api/v1/user/register`,
                 formData,
                 {
                     headers: {

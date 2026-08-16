@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import.meta.env.VITE_API_URL;
 import { toast } from "sonner";
 import { setCart } from "@/redux/productSlice";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const Cart = () => {
     const fetchCart = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/v1/cart",
+          `${import.meta.env.VITE_API_URL}/api/v1/cart`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -65,7 +66,7 @@ const Cart = () => {
       setLoadingItem(productId);
 
       const res = await axios.put(
-        "http://localhost:8000/api/v1/cart/update",
+        `${import.meta.env.VITE_API_URL}/api/v1/cart/update`,
         {
           productId,
           type,
@@ -100,7 +101,7 @@ const Cart = () => {
       setLoadingItem(productId);
 
       const res = await axios.delete(
-        "http://localhost:8000/api/v1/cart/remove",
+        `${import.meta.env.VITE_API_URL}/api/v1/cart/remove`,
         {
           data: { productId },
           headers: {

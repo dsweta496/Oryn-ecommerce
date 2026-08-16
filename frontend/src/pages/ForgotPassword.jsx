@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import.meta.env.VITE_API_URL;
 import {
     Eye,
     EyeOff,
@@ -49,7 +50,7 @@ const ForgotPassword = () => {
             setLoading(true);
 
             const res = await axios.post(
-                "http://localhost:8000/api/v1/user/forgotPassword",
+                `${import.meta.env.VITE_API_URL}/api/v1/user/forgotPassword`,
                 { email }
             );
 
@@ -79,7 +80,7 @@ const ForgotPassword = () => {
             setLoading(true);
 
             const res = await axios.post(
-                `http://localhost:8000/api/v1/user/verify-otp/${encodeURIComponent(email)}`,
+                `${import.meta.env.VITE_API_URL}/api/v1/user/verify-otp/${encodeURIComponent(email)}`,
                 { otp }
             );
 
@@ -127,7 +128,7 @@ const ForgotPassword = () => {
             setLoading(true);
 
             const res = await axios.post(
-                `http://localhost:8000/api/v1/user/changePassword/${encodeURIComponent(email)}`,
+                `${import.meta.env.VITE_API_URL}/api/v1/user/changePassword/${encodeURIComponent(email)}`,
                 {
                     newPassword: passwords.newPassword,
                     confirmPassword:

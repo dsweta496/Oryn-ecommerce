@@ -1,4 +1,5 @@
 import React from 'react'
+import.meta.env.VITE_API_URL;
 import { Button } from './ui/button'
 import { ShoppingCart } from 'lucide-react'
 import { Skeleton } from './ui/skeleton'
@@ -23,7 +24,7 @@ const ProductCard = ({ product, loading }) => {
 
         try {
             const res = await axios.post(
-                "http://localhost:8000/api/v1/cart/add",
+                `${import.meta.env.VITE_API_URL}/api/v1/cart/add`,
                 { productId },
                 {
                     headers: {

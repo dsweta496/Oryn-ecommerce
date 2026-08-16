@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import.meta.env.VITE_API_URL;
 import { Link, useNavigate } from "react-router-dom";
 import {
     Menu,
@@ -42,7 +43,7 @@ const Navbar = () => {
 
             try {
                 const res = await axios.get(
-                    "http://localhost:8000/api/v1/cart",
+                    `${import.meta.env.VITE_API_URL}/api/v1/cart`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
@@ -70,7 +71,7 @@ const Navbar = () => {
 
         try {
             const res = await axios.post(
-                "http://localhost:8000/api/v1/user/logout",
+                `${import.meta.env.VITE_API_URL}/api/v1/user/logout`,
                 {},
                 {
                     headers: {

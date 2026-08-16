@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { setCart } from "@/redux/productSlice";
 import axios from "axios";
+import.meta.env.VITE_API_URL;
 
 const ProductDetails = () => {
     const { productId } = useParams();
@@ -34,7 +35,7 @@ const ProductDetails = () => {
                 setLoading(true);
 
                 const res = await axios.get(
-                    `http://localhost:8000/api/v1/product/${productId}`
+                    `${import.meta.env.VITE_API_URL}/api/v1/product/${productId}`
                 );
 
                 if (res.data.success) {
@@ -104,7 +105,7 @@ const ProductDetails = () => {
             // → SET its quantity to the selected quantity
             if (existingCartItem) {
                 const res = await axios.put(
-                    "http://localhost:8000/api/v1/cart/update",
+                    `${import.meta.env.VITE_API_URL}/api/v1/cart/update`,
                     {
                         productId: product._id,
                         quantity: quantity,
@@ -125,7 +126,7 @@ const ProductDetails = () => {
             // → Add it with the selected quantity
             else {
                 const res = await axios.post(
-                    "http://localhost:8000/api/v1/cart/add",
+                    `${import.meta.env.VITE_API_URL}/api/v1/cart/add`,
                     {
                         productId: product._id,
                         quantity: quantity,

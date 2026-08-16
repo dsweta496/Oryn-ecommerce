@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import.meta.env.VITE_API_URL
 import {
     LayoutDashboard,
     Plus,
@@ -70,7 +71,7 @@ const Admin = () => {
             setLoading(true);
 
             const res = await axios.get(
-                "http://localhost:8000/api/v1/product/getAllProducts"
+                `${import.meta.env.VITE_API_URL}/api/v1/product/getAllProducts`
             );
 
             if (res.data.success) {
@@ -100,7 +101,7 @@ const Admin = () => {
             }
 
             const res = await axios.get(
-                "http://localhost:8000/api/v1/order/admin/stats",
+                `${import.meta.env.VITE_API_URL}/api/v1/order/admin/stats`,
                 {
                     withCredentials: true,
                     headers: {
@@ -134,7 +135,7 @@ const Admin = () => {
                 return;
             }
             const res = await axios.get(
-                "http://localhost:8000/api/v1/order/admin/product-analytics",
+                `${import.meta.env.VITE_API_URL}/api/v1/order/admin/product-analytics`,
                 { withCredentials: true, headers: { Authorization: `Bearer ${accessToken}` } }
             );
             if (res.data.success) setProductAnalytics(res.data.analytics || []);
@@ -204,7 +205,7 @@ const Admin = () => {
             }
 
             const response = await axios.post(
-                "http://localhost:8000/api/v1/product/add",
+                `${import.meta.env.VITE_API_URL}/api/v1/product/add`,
                 formData,
                 {
                     withCredentials: true,
@@ -350,7 +351,7 @@ const Admin = () => {
             }
 
             const response = await axios.put(
-                `http://localhost:8000/api/v1/product/update/${editingProduct._id}`,
+                `${import.meta.env.VITE_API_URL}/api/v1/product/update/${editingProduct._id}`,
                 formData,
                 {
                     withCredentials: true,
@@ -416,7 +417,7 @@ const Admin = () => {
             }
 
             const response = await axios.delete(
-                `http://localhost:8000/api/v1/product/delete/${product._id}`,
+                `${import.meta.env.VITE_API_URL}/api/v1/product/delete/${product._id}`,
                 {
                     withCredentials: true,
                     headers: {

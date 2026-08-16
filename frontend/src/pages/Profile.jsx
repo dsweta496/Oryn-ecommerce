@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import.meta.env.VITE_API_URL;
 import { toast } from "sonner";
 import { setUser } from "@/redux/userSlice";
 import { ShoppingBag } from "lucide-react";
@@ -92,7 +93,7 @@ const Profile = () => {
             const accessToken = localStorage.getItem("accessToken");
 
             const res = await axios.get(
-                "http://localhost:8000/api/v1/order/my-orders",
+                `${import.meta.env.VITE_API_URL}/api/v1/order/my-orders`,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -147,7 +148,7 @@ const Profile = () => {
             }
 
             const res = await axios.put(
-                `http://localhost:8000/api/v1/user/update/${user?._id}`,
+                `${import.meta.env.VITE_API_URL}/api/v1/user/update/${user?._id}`,
                 formData,
                 {
                     headers: {

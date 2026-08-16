@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import.meta.env.VITE_API_URL;
 
 import {
   CreditCard,
@@ -140,7 +141,7 @@ const Checkout = () => {
         localStorage.getItem("accessToken");
 
       const res = await axios.post(
-        "http://localhost:8000/api/v1/order/cod",
+        `${import.meta.env.VITE_API_URL}/api/v1/order/cod`,
         {
           shippingAddress,
         },
@@ -198,7 +199,7 @@ const Checkout = () => {
       // --------------------------------------------------
 
       const res = await axios.post(
-        "http://localhost:8000/api/v1/order/razorpay/create",
+        `${import.meta.env.VITE_API_URL}/api/v1/order/razorpay/create`,
         {
           shippingAddress,
         },
@@ -291,7 +292,7 @@ const Checkout = () => {
             const verifyResponse =
               await axios.post(
 
-                "http://localhost:8000/api/v1/order/razorpay/verify",
+                `${import.meta.env.VITE_API_URL}/api/v1/order/razorpay/verify`,
 
                 {
                   razorpay_order_id:
@@ -420,7 +421,7 @@ const Checkout = () => {
 
             await axios.post(
 
-              "http://localhost:8000/api/v1/order/razorpay/failed",
+                `${import.meta.env.VITE_API_URL}/api/v1/order/razorpay/failed`,
 
               {
                 razorpay_order_id:
