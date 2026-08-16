@@ -1,4 +1,5 @@
 import { Product } from "../models/productModel.js";
+import { Cart } from "../models/cartModel.js";
 import cloudinary from "../utils/cloudinary.js"
 import getDataUri from "../utils/dataUri.js";
 
@@ -102,33 +103,53 @@ export const deleteProduct = async (req, res) => {
         const product = await Product.findById(productId);
 
         if (!product) {
-            return res.status(404)
-                .json({
-                    success: false,
-                    message: "Product not found."
-                });
+            return res.status(404).json({
+                success: false,
+                message: "Product not found."
+            });
         }
 
+        // Delete product images from Cloudinary
         if (product.productImg && product.productImg.length > 0) {
             for (let img of product.productImg) {
                 await cloudinary.uploader.destroy(img.public_id);
             }
         }
 
+        // Remove this product from every user's cart
+        const affectedCarts = await Cart.find({
+            "items.productId": productId
+        });
+
+        for (let cart of affectedCarts) {
+            cart.items = cart.items.filter(
+                item => item.productId.toString() !== productId
+            );
+
+            // Recalculate cart total
+            cart.totalPrice = cart.items.reduce(
+                (acc, item) => acc + item.price * item.quantity,
+                0
+            );
+
+            await cart.save();
+        }
+
+        // Delete the product
         await Product.findByIdAndDelete(productId);
 
-        return res.status(200)
-            .json({
-                success: true,
-                message: "Product deleted successfully."
-            });
+        return res.status(200).json({
+            success: true,
+            message: "Product deleted successfully."
+        });
 
     } catch (error) {
-        return res.status(500)
-            .json({
-                success: false,
-                message: error.message
-            });
+        console.error("DELETE PRODUCT ERROR:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
     Tabs,
     TabsContent,
@@ -12,10 +13,20 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
 import { setUser } from "@/redux/userSlice";
+import { ShoppingBag } from "lucide-react";
 
 const Profile = () => {
     const { user } = useSelector(store => store.user);
     const dispatch = useDispatch();
+
+    const [searchParams] = useSearchParams();
+
+    const initialTab =
+        searchParams.get("tab") === "orders"
+            ? "orders"
+            : "profile";
+    const [orders, setOrders] = useState([]);
+    const [ordersLoading, setOrdersLoading] = useState(false);
 
     const [name, setName] = useState("Pedro Duarte");
     const [username, setUsername] = useState("@peduarte");
@@ -74,6 +85,42 @@ const Profile = () => {
         });
     };
 
+    const fetchMyOrders = async () => {
+        try {
+            setOrdersLoading(true);
+
+            const accessToken = localStorage.getItem("accessToken");
+
+            const res = await axios.get(
+                "http://localhost:8000/api/v1/order/my-orders",
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            if (res.data.success) {
+                setOrders(res.data.orders || []);
+            }
+        } catch (error) {
+            console.error("FETCH ORDERS ERROR:", error);
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to fetch your orders."
+            );
+        } finally {
+            setOrdersLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (user?._id) {
+            fetchMyOrders();
+        }
+    }, [user?._id]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -128,7 +175,7 @@ const Profile = () => {
         <div className="min-h-screen pt-22 bg-gray-100">
 
             <Tabs
-                defaultValue="profile"
+                defaultValue={initialTab}
                 className="max-w-10xl mx-auto items-center"
             >
 
@@ -358,101 +405,152 @@ const Profile = () => {
 
                 </TabsContent>
 
-                {/* =========================
-                    ORDERS
-                ========================== */}
-                <TabsContent
-                    value="orders"
-                    className="m-0 p-6"
-                >
+                <TabsContent value="orders">
+                    <div className="w-full max-w-5xl mx-auto px-6 py-10">
 
-                    <div className="rounded-xl border border-gray-200 bg-white p-7 shadow-sm">
+                        <div className="mb-8">
+                            <h1 className="font-bold text-3xl text-gray-800">
+                                My Orders
+                            </h1>
 
-                        <h2 className="text-xl font-semibold text-gray-900">
-                            Password
-                        </h2>
+                            <p className="text-gray-500 mt-2">
+                                View and track all your orders.
+                            </p>
+                        </div>
 
-                        <p className="mt-1 text-sm text-gray-500">
-                            Change your password here. After saving, you'll be
-                            logged out.
-                        </p>
+                        {/* LOADING */}
+                        {ordersLoading && (
+                            <div className="bg-white border border-gray-200 rounded-xl p-10 text-center">
+                                <p className="text-gray-500">
+                                    Loading your orders...
+                                </p>
+                            </div>
+                        )}
 
-                        <form className="mt-8 space-y-6">
+                        {/* NO ORDERS */}
+                        {!ordersLoading && orders.length === 0 && (
+                            <div className="bg-white border border-gray-200 rounded-xl p-10 text-center">
+                                <ShoppingBag className="w-12 h-12 mx-auto text-gray-300 mb-4" />
 
-                            {/* CURRENT PASSWORD */}
-                            <div className="space-y-2">
+                                <h2 className="text-lg font-semibold text-gray-800">
+                                    No orders yet
+                                </h2>
 
-                                <label
-                                    htmlFor="currentPassword"
-                                    className="text-sm font-medium text-gray-900"
-                                >
-                                    Current password
-                                </label>
+                                <p className="text-gray-500 mt-2">
+                                    Your orders will appear here once you place one.
+                                </p>
+                            </div>
+                        )}
 
-                                <input
-                                    id="currentPassword"
-                                    type="password"
-                                    value={currentPassword}
-                                    onChange={(e) =>
-                                        setCurrentPassword(e.target.value)
-                                    }
-                                    className="
-                                        w-full rounded-md border border-gray-200
-                                        bg-white px-3 py-3 text-sm
-                                        outline-none
-                                        focus:border-pink-500
-                                        focus:ring-2 focus:ring-pink-100
-                                    "
-                                />
+                        {/* ORDERS */}
+                        {!ordersLoading && orders.length > 0 && (
+                            <div className="space-y-5">
+
+                                {orders.map((order) => (
+                                    <div
+                                        key={order._id}
+                                        className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm"
+                                    >
+
+                                        {/* ORDER HEADER */}
+                                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b pb-4">
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Order ID
+                                                </p>
+
+                                                <p className="font-semibold text-gray-800 break-all">
+                                                    #{order._id}
+                                                </p>
+                                            </div>
+
+                                            <div className="flex gap-2">
+
+                                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                                                    {order.orderStatus}
+                                                </span>
+
+                                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                                    {order.paymentStatus}
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* PRODUCTS */}
+                                        <div className="py-5">
+
+                                            <p className="text-sm text-gray-500 mb-3">
+                                                Products
+                                            </p>
+
+                                            <div className="space-y-3">
+
+                                                {order.items?.map((item, index) => (
+                                                    <div
+                                                        key={item._id || index}
+                                                        className="flex items-center justify-between gap-4"
+                                                    >
+
+                                                        <div className="min-w-0">
+                                                            <p className="font-medium text-gray-800">
+                                                                {item.productName || "Product"}                                                            </p>
+
+                                                            <p className="text-sm text-gray-500">
+                                                                Quantity: {item.quantity}
+                                                            </p>
+                                                        </div>
+
+                                                        <p className="font-semibold text-gray-800 whitespace-nowrap">
+                                                            ₹{(
+                                                                (item.price || 0) * (item.quantity || 0)
+                                                            ).toLocaleString("en-IN")}
+                                                        </p>
+
+                                                    </div>
+                                                ))}
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* FOOTER */}
+                                        <div className="border-t pt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+
+                                            <div>
+                                                <p className="text-sm text-gray-500">
+                                                    Payment
+                                                </p>
+
+                                                <p className="font-medium text-gray-800 uppercase">
+                                                    {order.paymentMethod}
+                                                </p>
+                                            </div>
+
+                                            <div className="text-left md:text-right">
+
+                                                <p className="text-sm text-gray-500">
+                                                    Total
+                                                </p>
+
+                                                <p className="text-xl font-bold text-gray-900">
+                                                    ₹{order.totalAmount?.toLocaleString("en-IN")}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                ))}
 
                             </div>
-
-                            {/* NEW PASSWORD */}
-                            <div className="space-y-2">
-
-                                <label
-                                    htmlFor="newPassword"
-                                    className="text-sm font-medium text-gray-900"
-                                >
-                                    New password
-                                </label>
-
-                                <input
-                                    id="newPassword"
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={(e) =>
-                                        setNewPassword(e.target.value)
-                                    }
-                                    className="
-                                        w-full rounded-md border border-gray-200
-                                        bg-white px-3 py-3 text-sm
-                                        outline-none
-                                        focus:border-pink-500
-                                        focus:ring-2 focus:ring-pink-100
-                                    "
-                                />
-
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="
-                                    rounded-md bg-gray-900
-                                    px-5 py-3
-                                    text-sm font-medium text-white
-                                    transition hover:bg-gray-800
-                                "
-                            >
-                                Save password
-                            </button>
-
-                        </form>
+                        )}
 
                     </div>
-
                 </TabsContent>
-
             </Tabs>
 
         </div>

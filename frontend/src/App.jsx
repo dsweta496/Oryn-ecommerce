@@ -4,16 +4,16 @@ import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 import Home from "./pages/Home";
 import Footer from "./components/footer";
-import Navbar from "../src/components/navbar"
-import Verify from "./pages/Verify"
-import VerifyEmail from "./pages/VerifyEmail"
+import Navbar from "../src/components/navbar";
+import Verify from "./pages/Verify";
+import VerifyEmail from "./pages/VerifyEmail";
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
 import ProductDetails from "./pages/ProductDetails";
 import ForgotPassword from "./pages/ForgotPassword";
-
+import Checkout from "./pages/Checkout";
 
 const router = createBrowserRouter([
   {
@@ -59,15 +59,19 @@ const router = createBrowserRouter([
   {
     path: '/cart',
     element: <><Navbar /><Cart /><Footer /></>
+  },
+  {
+    path: '/checkout',
+    element: <><Navbar /><Checkout /><Footer /></>
   }
-])
+]);
 
 function App() {
   return (
     <>
       <RouterProvider router={router} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

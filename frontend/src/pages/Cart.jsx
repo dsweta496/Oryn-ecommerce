@@ -4,12 +4,18 @@ import axios from "axios";
 import { toast } from "sonner";
 import { setCart } from "@/redux/productSlice";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import {
+  Minus,
+  Plus,
+  Trash2,
+  ShoppingBag,
+  ArrowRight,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { cart } = useSelector((state) => state.product);
   const accessToken = localStorage.getItem("accessToken");
@@ -51,6 +57,9 @@ const Cart = () => {
     }).format(price || 0);
   };
 
+      
+  // UPDATE QUANTITY
+      
   const updateQuantity = async (productId, type) => {
     try {
       setLoadingItem(productId);
@@ -71,19 +80,21 @@ const Cart = () => {
       if (res.data.success) {
         dispatch(setCart(res.data.cart));
       }
-
     } catch (error) {
       console.error("UPDATE CART ERROR:", error);
 
       toast.error(
         error.response?.data?.message ||
-        "Failed to update cart."
+          "Failed to update cart."
       );
     } finally {
       setLoadingItem(null);
     }
   };
 
+      
+  // REMOVE ITEM
+      
   const removeItem = async (productId) => {
     try {
       setLoadingItem(productId);
@@ -108,16 +119,19 @@ const Cart = () => {
 
       toast.error(
         error.response?.data?.message ||
-        "Failed to remove item."
+          "Failed to remove item."
       );
     } finally {
       setLoadingItem(null);
     }
   };
 
+      
+  // EMPTY CART
+      
   if (!cart || items.length === 0) {
     return (
-      <div className="min-h-[70vh]  flex flex-col items-center justify-center px-4">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
         <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-5">
           <ShoppingBag className="w-9 h-9 text-gray-500" />
         </div>
@@ -142,21 +156,21 @@ const Cart = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
           Your Cart
         </h1>
 
         <p className="text-gray-500 mt-2">
-          {items.length} {items.length === 1 ? "item" : "items"} in
-          your cart
+          {items.length}{" "}
+          {items.length === 1 ? "item" : "items"} in your cart
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
 
-        {/* CART ITEMS */}
+        {/* CART ITEMS*/}
         <div className="space-y-4">
 
           {items.map((item) => {
@@ -168,13 +182,13 @@ const Cart = () => {
               product.productImg?.[0]?.url ||
               "/placeholder-product.png";
 
-            const isLoading = loadingItem === product._id;
+            const isLoading =
+              loadingItem === product._id;
 
             return (
               <div
                 key={product._id}
                 onClick={(e) => {
-                  // Don't navigate when clicking cart controls
                   if (e.target.closest("button")) {
                     return;
                   }
@@ -188,6 +202,7 @@ const Cart = () => {
                   {/* IMAGE */}
                   <Link
                     to={`/products/${product._id}`}
+                    onClick={(e) => e.stopPropagation()}
                     className="w-24 h-24 md:w-32 md:h-32 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
                   >
                     <img
@@ -201,9 +216,11 @@ const Cart = () => {
                   <div className="flex-1 min-w-0">
 
                     <div className="flex justify-between gap-3">
+
                       <div>
                         <Link
                           to={`/products/${product._id}`}
+                          onClick={(e) => e.stopPropagation()}
                           className="font-medium text-gray-900 text-base md:text-lg hover:text-pink-600 transition-colors cursor-pointer"
                         >
                           {product.productName}
@@ -218,11 +235,13 @@ const Cart = () => {
 
                       {/* REMOVE */}
                       <button
-                        onClick={() =>
-                          removeItem(product._id)
-                        }
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeItem(product._id);
+                        }}
                         disabled={isLoading}
-                        className="text-gray-400 hover:text-red-500 transition"
+                        className="text-gray-400 hover:text-red-500 transition disabled:opacity-40"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -239,12 +258,14 @@ const Cart = () => {
                       <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
 
                         <button
-                          onClick={() =>
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             updateQuantity(
                               product._id,
                               "decrease"
-                            )
-                          }
+                            );
+                          }}
                           disabled={
                             isLoading ||
                             item.quantity <= 1
@@ -259,12 +280,14 @@ const Cart = () => {
                         </span>
 
                         <button
-                          onClick={() =>
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             updateQuantity(
                               product._id,
                               "increase"
-                            )
-                          }
+                            );
+                          }}
                           disabled={isLoading}
                           className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40"
                         >
@@ -276,13 +299,11 @@ const Cart = () => {
                       {/* ITEM TOTAL */}
                       <p className="font-semibold text-gray-900">
                         {formatPrice(
-                          item.price *
-                          item.quantity
+                          item.price * item.quantity
                         )}
                       </p>
 
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -293,6 +314,7 @@ const Cart = () => {
 
         {/* ORDER SUMMARY */}
         <div className="lg:sticky lg:top-24 h-max">
+
           <div className="border border-gray-200 rounded-xl p-6 bg-white">
 
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
@@ -327,8 +349,14 @@ const Cart = () => {
 
             </div>
 
-            <Button className="w-full mt-6 h-12 text-base">
+            {/* FIXED: ACTUAL NAVIGATION */}
+            <Button
+              type="button"
+              onClick={() => navigate("/checkout")}
+              className="w-full mt-6 h-12 text-base bg-pink-700 hover:bg-pink-800"
+            >
               Proceed to Checkout
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
             <Link
