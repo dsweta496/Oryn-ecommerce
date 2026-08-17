@@ -62,9 +62,9 @@ const Navbar = () => {
         fetchCart();
     }, [dispatch]);
 
-    // =========================
+      
     // LOGOUT
-    // =========================
+      
 
     const logoutHandler = async () => {
         setMenuOpen(false);
@@ -98,9 +98,9 @@ const Navbar = () => {
         }
     };
 
-    // =========================
+      
     // USER DATA
-    // =========================
+      
 
     const userName = user?.firstName || "Guest";
 
@@ -120,9 +120,9 @@ const Navbar = () => {
     return (
         <nav className="bg-pink-800 text-white shadow-md sticky top-0 z-50">
 
-            {/* =========================
+            {/*    
                 TOP NAVBAR
-            ========================= */}
+                */}
 
             <div className="border-b border-pink-700 sticky top-0 z-50">
 
@@ -130,9 +130,9 @@ const Navbar = () => {
 
                     <div className="h-16 flex items-center justify-between">
 
-                        {/* =========================
+                        {/*    
                             LEFT : HAMBURGER + LOGO
-                        ========================= */}
+                            */}
 
                         <div className="flex items-center gap-2 sm:gap-4">
 
@@ -165,9 +165,9 @@ const Navbar = () => {
 
                         </div>
 
-                        {/* =========================
+                        {/*    
                             DESKTOP NAVIGATION
-                        ========================= */}
+                            */}
 
                         <div className="hidden md:flex items-center gap-7">
 
@@ -242,9 +242,9 @@ const Navbar = () => {
 
                         </div>
 
-                        {/* =========================
+                        {/*    
                             MOBILE USER + CART
-                        ========================= */}
+                            */}
 
                         <div className="md:hidden flex items-center gap-3">
 
@@ -292,13 +292,13 @@ const Navbar = () => {
 
             </div>
 
-            {/* =========================
+            {/*    
                 DELIVERY BAR
-            ========================= */}
+                */}
 
-            {/* =========================
+            {/*    
     DELIVERY BAR
-========================= */}
+    */}
 
             <div className="bg-pink-900 border-b border-pink-700">
 
@@ -383,9 +383,9 @@ const Navbar = () => {
 
             </div>
 
-            {/* =========================
+            {/*    
                 MOBILE SLIDE MENU
-            ========================= */}
+                */}
 
             {menuOpen && (
 

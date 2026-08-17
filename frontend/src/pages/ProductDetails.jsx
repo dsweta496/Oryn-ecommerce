@@ -200,12 +200,12 @@ const ProductDetails = () => {
 
             <div className="max-w-7xl mx-auto">
 
-                {/* ================= MAIN PRODUCT LAYOUT ================= */}
+                {/*        MAIN PRODUCT LAYOUT        */}
                 <div className="grid p-8 grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
 
-                    {/* ================================================= */}
+                           
                     {/* LEFT — PRODUCT IMAGES */}
-                    {/* ================================================= */}
+                           
 
                     <div className="w-full">
 
@@ -261,9 +261,9 @@ const ProductDetails = () => {
                             </div>
                         </div>
 
-                        {/* ================================================= */}
+                               
                         {/* MOBILE IMAGE */}
-                        {/* ================================================= */}
+                               
 
                         <div className="sm:hidden">
 
@@ -317,9 +317,9 @@ const ProductDetails = () => {
                         </div>
                     </div>
 
-                    {/* ================================================= */}
+                           
                     {/* RIGHT — PRODUCT INFORMATION */}
-                    {/* ================================================= */}
+                           
 
                     <div className="flex flex-col  lg:tp-14">
 
@@ -352,9 +352,9 @@ const ProductDetails = () => {
                         {/* Divider */}
                         <div className="border-t border-gray-200 my-5" />
 
-                        {/* ================================================= */}
+                               
                         {/* DESCRIPTION */}
-                        {/* ================================================= */}
+                               
 
                         <div>
                             <h2 className="text-lg font-semibold mb-2">
@@ -433,9 +433,9 @@ const ProductDetails = () => {
                             </div>
                         </div>
 
-                        {/* ================================================= */}
+                               
                         {/* ADD TO CART */}
-                        {/* ================================================= */}
+                               
 
                         <Button
                             onClick={addToCart}

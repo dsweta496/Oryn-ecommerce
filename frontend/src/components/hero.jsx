@@ -57,7 +57,7 @@ const Hero = () => {
                     "
                 >
 
-                    {/* ================= LEFT SIDE ================= */}
+                    {/*   LEFT SIDE   */}
                     <div
                         className="
                             text-center
@@ -155,7 +155,7 @@ const Hero = () => {
                     </div>
 
 
-                    {/* ================= RIGHT SIDE ================= */}
+                    {/*   RIGHT SIDE   */}
                     <div
                         className="
                             relative

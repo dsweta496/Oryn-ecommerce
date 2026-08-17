@@ -25,7 +25,7 @@ const Home = () => {
 
             <Features />
 
-            {/* ================= DEALS / BANNERS ================= */}
+            {/*       DEALS / BANNERS       */}
             <section
                 id="deals"
                 className="banner-section"
