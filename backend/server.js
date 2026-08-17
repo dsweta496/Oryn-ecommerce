@@ -16,7 +16,7 @@ import cors from "cors";
 
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://oryn-frontend-c01b.onrender.com"
+    "https://oryn-frontend-c0ib.onrender.com"
 ];
 
 app.use(
