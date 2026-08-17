@@ -89,6 +89,7 @@ const LogIn = () => {
             <Card className="relative z-10 w-full max-w-sm bg-white/90 backdrop-blur-md border-white/30 shadow-2xl">
 
                 <CardHeader>
+
                     <CardTitle className="text-2xl">
                         Login to your account
                     </CardTitle>
@@ -96,6 +97,7 @@ const LogIn = () => {
                     <CardDescription>
                         Enter your details below to login to your account
                     </CardDescription>
+
                 </CardHeader>
 
                 <CardContent>
@@ -125,17 +127,10 @@ const LogIn = () => {
                         {/* Password */}
                         <div className="grid gap-2">
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center">
                                 <Label htmlFor="password">
                                     Password
                                 </Label>
-
-                                <Link
-                                    to="/forgot-password"
-                                    className="text-sm text-pink-800 hover:underline cursor-pointer"
-                                >
-                                    Forgot password?
-                                </Link>
                             </div>
 
                             <div className="relative">
@@ -208,4 +203,4 @@ const LogIn = () => {
     )
 }
 
-export default LogIn
+export default LogIn;
