@@ -8,21 +8,38 @@ import orderRoute from "./routes/order.routes.js";
 import cors from "cors"
 
 const app = express();
-const PORT =process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
 
 //MIDDLEWARE
 app.use(express.json());
-app.use(cors({
-    origin:'http://localhost:5173',
-    credentials:true
-}))
+import cors from "cors";
 
-app.use('/api/v1/user',userRouter)
-app.use('/api/v1/product',productRouter)
-app.use('/api/v1/cart',cartRouter)
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://oryn-frontend-c01b.onrender.com"
+];
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"]
+    })
+);
+
+app.use('/api/v1/user', userRouter)
+app.use('/api/v1/product', productRouter)
+app.use('/api/v1/cart', cartRouter)
 app.use("/api/v1/order", orderRoute);
 
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
     connectDB();
 })
