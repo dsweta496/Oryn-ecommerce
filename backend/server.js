@@ -10,9 +10,7 @@ import cors from "cors"
 const app = express();
 const PORT = process.env.PORT || 3000
 
-//MIDDLEWARE
-app.use(express.json());
-import cors from "cors";
+
 
 const allowedOrigins = [
     "http://localhost:5173",
@@ -33,6 +31,8 @@ app.use(
         allowedHeaders: ["Content-Type", "Authorization"]
     })
 );
+//MIDDLEWARE
+app.use(express.json());
 
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/product', productRouter)
