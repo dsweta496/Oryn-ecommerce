@@ -2,249 +2,192 @@ import nodemailer from "nodemailer";
 import "dotenv/config";
 
 export const sendOTPmail = async (otp, email) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS,
-        },
-    });
+    try {
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS,
+            },
+        });
 
-    const otpDigits = String(otp).split("");
+        const mailConfigurations = {
+            from: `"ORYN.com" <${process.env.MAIL_USER}>`,
+            to: email,
+            subject: "ORYN Password Reset OTP",
 
-    const mailConfigurations = {
-        from: process.env.MAIL_USER,
-        to: email,
-        subject: "ORYN | Password Reset OTP",
+            html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>ORYN Password Reset</title>
+            </head>
 
-        html: `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Password Reset OTP</title>
-        </head>
+            <body style="
+                margin: 0;
+                padding: 0;
+                background-color: #f7f7f9;
+                font-family: Arial, Helvetica, sans-serif;
+            ">
 
-        <body style="
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f7;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #292b32;
-        ">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td align="center" style="padding: 40px 15px;">
 
-            <table
-                width="100%"
-                cellpadding="0"
-                cellspacing="0"
-                border="0"
-                style="background-color: #f5f5f7; padding: 40px 15px;"
-            >
-                <tr>
-                    <td align="center">
+                            <table
+                                width="600"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                style="
+                                    max-width: 600px;
+                                    width: 100%;
+                                    background-color: #ffffff;
+                                    border-radius: 16px;
+                                    overflow: hidden;
+                                    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+                                "
+                            >
 
-                        <!-- Main Email Container -->
-                        <table
-                            width="100%"
-                            cellpadding="0"
-                            cellspacing="0"
-                            border="0"
-                            style="
-                                max-width: 680px;
-                                background: linear-gradient(
-                                    145deg,
-                                    #fff9fc 0%,
-                                    #ffffff 55%,
-                                    #fff7fb 100%
-                                );
-                                border: 1px solid #f4dce8;
-                                border-radius: 18px;
-                                overflow: hidden;
-                            "
-                        >
-
-                            <!-- ORYN Header -->
-                            <tr>
-                                <td
-                                    align="center"
-                                    style="padding: 42px 30px 25px;"
-                                >
-
-                                    <div style="
-                                        display: inline-block;
-                                        font-size: 32px;
-                                        font-weight: 800;
-                                        letter-spacing: 6px;
-                                        color: #d72f78;
+                                <!-- Header -->
+                                <tr>
+                                    <td align="center" style="
+                                        padding: 30px 20px;
+                                        background: linear-gradient(
+                                            135deg,
+                                            #e6007e,
+                                            #6a0dad
+                                        );
                                     ">
-                                        ♙ORYN
-                                    </div>
 
-                                </td>
-                            </tr>
+                                        <div style="
+                                            font-size: 32px;
+                                            font-weight: 800;
+                                            color: #ffffff;
+                                            letter-spacing: 1px;
+                                        ">
+                                            ORYN.com
+                                        </div>
 
+                                    </td>
+                                </tr>
 
-                            <!-- Content -->
-                            <tr>
-                                <td
-                                    align="center"
-                                    style="padding: 10px 45px 45px;"
-                                >
-
-                                    <!-- Lock Icon -->
-                                    <div style="
-                                        width: 68px;
-                                        height: 68px;
-                                        line-height: 68px;
-                                        border-radius: 50%;
-                                        background-color: #fff0f6;
-                                        color: #d72f78;
-                                        font-size: 32px;
-                                        margin: 0 auto 25px;
-                                    ">
-                                        🔒
-                                    </div>
-
-
-                                    <!-- Heading -->
-                                    <h1 style="
-                                        margin: 0 0 15px;
-                                        font-size: 28px;
-                                        line-height: 1.3;
-                                        font-weight: 700;
-                                        color: #292b32;
-                                    ">
-                                        Password Reset OTP
-                                    </h1>
-
-
-                                    <!-- Description -->
-                                    <p style="
-                                        margin: 0;
-                                        max-width: 480px;
-                                        font-size: 16px;
-                                        line-height: 1.7;
-                                        color: #666a73;
-                                    ">
-                                        We received a request to reset your
-                                        password. Use the OTP below to verify
-                                        your identity.
-                                    </p>
-
-
-                                    <!-- OTP -->
-                                    <table
-                                        cellpadding="0"
-                                        cellspacing="0"
-                                        border="0"
-                                        style="margin: 32px auto 28px;"
-                                    >
-                                        <tr>
-
-                                            ${otpDigits.map((digit) => `
-                                                <td style="padding: 0 5px;">
-                                                    <div style="
-                                                        width: 54px;
-                                                        height: 68px;
-                                                        line-height: 68px;
-                                                        text-align: center;
-                                                        border-radius: 12px;
-                                                        background-color: #fff1f7;
-                                                        border: 1px solid #f7d7e6;
-                                                        color: #d72f78;
-                                                        font-size: 30px;
-                                                        font-weight: 700;
-                                                    ">
-                                                        ${digit}
-                                                    </div>
-                                                </td>
-                                            `).join("")}
-
-                                        </tr>
-                                    </table>
-
-
-                                    <!-- Expiry -->
-                                    <p style="
-                                        margin: 0 0 25px;
-                                        font-size: 15px;
-                                        color: #666a73;
-                                    ">
-                                        This OTP will expire in
-                                        <strong style="color: #d72f78;">
-                                            10 minutes.
-                                        </strong>
-                                    </p>
-
-
-                                    <!-- Security Notice -->
-                                    <div style="
-                                        max-width: 470px;
-                                        padding: 16px 20px;
-                                        border-radius: 10px;
-                                        background-color: #fff7fa;
-                                        border: 1px solid #f5dce7;
-                                        font-size: 13px;
-                                        line-height: 1.6;
-                                        color: #777b84;
-                                    ">
-                                        If you didn't request a password reset,
-                                        you can safely ignore this email.
-                                    </div>
-
-                                </td>
-                            </tr>
-
-
-                            <!-- Footer -->
-                            <tr>
-                                <td style="padding: 0 45px 35px;">
-
-                                    <div style="
-                                        height: 1px;
-                                        background-color: #f2d9e5;
-                                        margin-bottom: 25px;
-                                    "></div>
-
-                                    <p style="
-                                        margin: 0;
+                                <!-- Content -->
+                                <tr>
+                                    <td style="
+                                        padding: 45px;
                                         text-align: center;
-                                        font-size: 13px;
-                                        line-height: 1.6;
-                                        color: #999da5;
                                     ">
-                                        © 2026 ORYN. All rights reserved.
-                                    </p>
 
-                                    <p style="
-                                        margin: 6px 0 0;
-                                        text-align: center;
-                                        font-size: 12px;
-                                        color: #b0b3ba;
+                                        <div style="
+                                            font-size: 48px;
+                                            margin-bottom: 15px;
+                                        ">
+                                            🔐
+                                        </div>
+
+                                        <h1 style="
+                                            margin: 0 0 15px;
+                                            color: #222222;
+                                            font-size: 28px;
+                                            font-weight: 700;
+                                        ">
+                                            Password Reset
+                                        </h1>
+
+                                        <p style="
+                                            margin: 0 auto 25px;
+                                            color: #666666;
+                                            font-size: 16px;
+                                            line-height: 1.6;
+                                        ">
+                                            Use the OTP below to reset your
+                                            ORYN account password.
+                                        </p>
+
+                                        <div style="
+                                            display: inline-block;
+                                            padding: 18px 35px;
+                                            margin: 10px 0 25px;
+                                            background-color: #f7e6f0;
+                                            border-radius: 12px;
+                                            color: #e6007e;
+                                            font-size: 32px;
+                                            font-weight: 800;
+                                            letter-spacing: 8px;
+                                        ">
+                                            ${otp}
+                                        </div>
+
+                                        <p style="
+                                            margin: 0;
+                                            color: #888888;
+                                            font-size: 13px;
+                                            line-height: 1.5;
+                                        ">
+                                            This OTP is valid for a limited time.
+                                        </p>
+
+                                        <p style="
+                                            margin: 25px 0 0;
+                                            color: #888888;
+                                            font-size: 13px;
+                                            line-height: 1.6;
+                                        ">
+                                            If you did not request a password reset,
+                                            you can safely ignore this email.
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                                <!-- Footer -->
+                                <tr>
+                                    <td align="center" style="
+                                        padding: 20px;
+                                        background-color: #fafafa;
                                     ">
-                                        This is an automated security email.
-                                        Please do not reply.
-                                    </p>
 
-                                </td>
-                            </tr>
+                                        <p style="
+                                            margin: 0;
+                                            color: #aaaaaa;
+                                            font-size: 12px;
+                                        ">
+                                            © 2026 ORYN. All rights reserved.
+                                        </p>
 
-                        </table>
+                                    </td>
+                                </tr>
 
-                    </td>
-                </tr>
-            </table>
+                            </table>
 
-        </body>
-        </html>
-        `,
-    };
+                        </td>
+                    </tr>
+                </table>
 
-    transporter.sendMail(mailConfigurations, function (error, info) {
-        if (error) throw Error(error);
+            </body>
+            </html>
+            `,
+        };
 
-        console.log("Email Sent Successfully");
-        console.log(info);
-    });
+        const info = await transporter.sendMail(mailConfigurations);
+
+        console.log("OTP email sent successfully");
+        console.log(info.messageId);
+
+        return {
+            success: true,
+            messageId: info.messageId,
+        };
+
+    } catch (error) {
+        console.error("OTP email failed:", error);
+
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
 };
